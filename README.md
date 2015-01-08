@@ -3,6 +3,93 @@
 This fork of the ndg_oauth project is aimed at enabling us to run the OAUTH AS behind an apache reverse proxy.
 Some changes required for us and implemented by Willem van Engen have already been integrated in the main ndg_oauth project.
 
+## Requirements ##
+
+python 2.7
+downgraded genshi from 0.7 to 0.6
+openssl-dev 0.9.8f or later
+python virtualenv
+python easy_install
+
+## Installation ##
+
+<Work in progress>
+
+### Create Python 2 virtual environment for AS ###
+
+```
+mkdir /srv/src/python
+cd /srv/src/python
+curl -k -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.10.1.tar.gz
+tar xvfz virtualenv-1.10.1.tar.gz
+```
+
+### Create Python 2 virtual environment ###
+mkdir -p /srv/python/2/venvs/
+/usr/bin/python2.7 virtualenv.py /srv/python/2/venvs/OAuth
+
+### Switch to Python 2 venv ###
+. /srv/python/2/venvs/OAuth/bin/activate
+
+### Install pyopenssl package in the virtual environment ###
+Ensure openssl-dev is installed.
+pyopenssl 0.13 and later require openssl with TLS support, provided by openssl 0.9.8f and later.
+If openssl 0.9.8f or later is installed run:
+easy_install pyOpenSSL
+
+f openssl 0.9.9e or earlier is installed upgrade openssl or run:
+easy_install http://pypi.python.org/packages/source/p/pyOpenSSL/pyOpenSSL-0.12.tar.gz
+
+### install NDG AS ###
+1. Get files
+```
+{ mkdir /srv/ndg-oath-as/as-ndg-master/ ; true ; }
+cd /srv/ndg-oath-as/as-ndg-master
+git clone -b as-ndg-master https://github.com/wvengen/oauth2-demo as-ndg-master
+```
+
+2. install AS
+```
+easy_install http://www.nikhef.nl/~wvengen/misc/ndg_oauth_server-0.4.0.tar.gz
+```
+
+## AS configuration ##
+
+After installation edit bearer_tok_server_app.ini
+
+In order to start the AS with the paste http server, activate the virtual environment and start the server with the correct
+configuration file:
+```
+> . /srv/python/2/venvs/OAuth/bin/activate
+> paster serve bearer_tok_server_app.ini start
+```
+
+init.d script (oauthctl.sh):
+```
+#/bin/sh
+
+case "$1" in
+start)
+    cd /srv/ndg-oath-as/ && \
+    . /srv/python/2/venvs/OAuth/bin/activate && \
+    paster serve bearer_tok_server_app.ini start
+;;
+stop)
+    cd /srv/ndg-oath-as/ && \
+    . /srv/python/2/venvs/OAuth/bin/activate && \
+    paster serve bearer_tok_server_app.ini stop
+;;
+restart)
+    cd /srv/ndg-oath-as/ && \
+    . /srv/python/2/venvs/OAuth/bin/activate && \
+    paster serve bearer_tok_server_app.ini restart
+;;
+*)
+echo $"Usage: $0 {start|stop|restart}"
+exit 1
+esac
+```
+
 ## Apache configuration ##
 
 Configure and start the AS as described in the previous section. For this example we assume the AS is running at localhost
