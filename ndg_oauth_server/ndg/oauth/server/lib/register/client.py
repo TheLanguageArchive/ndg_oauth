@@ -119,8 +119,8 @@ class ClientRegister(object):
                 return ('No redirect URI is registered for the client or '
                         'specified in the request.')
 
-        if (redirect_uri is not None and 
-            redirect_uri not in client.redirect_uris):
+        if (redirect_uri is not None and
+            redirect_uri.split('?')[0] not in client.redirect_uris):
             return 'Redirect URI is not registered.'
 
         return None

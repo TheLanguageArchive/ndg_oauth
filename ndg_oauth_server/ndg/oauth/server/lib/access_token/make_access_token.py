@@ -41,7 +41,8 @@ def make_access_token(*args):
 def _make_access_token_from_authz_code_grant(token_request, client_id, 
                                              access_token_register, 
                                              access_token_generator,
-                                             authorization_grant_register):
+                                             authorization_grant_register,
+                                             request):
     """Makes an access token based on a token request and using a given access
     token generator.
     Returns
