@@ -1,7 +1,7 @@
 # CLARIN OAUTH AS project #
 
-This fork of the ndg_oauth project is aimed at enabling us to run the OAUTH AS behind an apache reverse proxy.
-Some changes required for us and implemented by Willem van Engen have already been integrated in the main ndg_oauth project.
+This fork of the ndg_oauth project is aimed at enabling us to run the OAUTH Authorization Server (AS) behind an apache reverse proxy.
+Some changes required for us and implemented by Willem van Engen have already been integrated in the main ndg_oauth project (https://github.com/cedadev/ndg_oauth).
 
 ## Requirements ##
 
@@ -59,10 +59,10 @@ cp -r /srv/OAuth/src/ndg_oauth/ndg_oauth_server/ndg/oauth/server/examples/bearer
 rm /srv/OAuth/server/README /srv/OAuth/server/__init__.py
 ```
 
-## AS configuration ##
+## OAuth AS configuration ##
 
-
-After installation edit bearer_tok_server_app.ini
+### Server ###
+After installation edit /srv/OAuth/server/bearer_tok_server_app.ini.
 
 In order to start the AS with the paste http server, activate the virtual environment and start the server with the correct
 configuration file:
@@ -71,6 +71,12 @@ configuration file:
 cd /srv/OAuth/server
 paster serve bearer_tok_server_app.ini start
 ```
+
+### Clients ###
+
+For each client you want to add to the AS you have to add a section in /srv/OAuth/server/client_register.ini
+
+### Startup script ###
 
 init.d script (oauthctl.sh):
 ```
