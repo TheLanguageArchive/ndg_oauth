@@ -5,63 +5,66 @@ Some changes required for us and implemented by Willem van Engen have already be
 
 ## Requirements ##
 
-python 2.7
-downgraded genshi from 0.7 to 0.6
-openssl-dev 0.9.8f or later
-python virtualenv
-python easy_install
+* python 2.7
+* downgraded genshi from 0.7 to 0.6
+* openssl-dev 0.9.8f or later
+* python virtualenv
+* python easy_install
 
 ## Installation ##
 
-<Work in progress>
+[Work in progress]
+
+This guide assumes installation of the AS in the /srv/
 
 ### Create Python 2 virtual environment for AS ###
 
 ```
-mkdir /srv/src/python
-cd /srv/src/python
-curl -k -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.10.1.tar.gz
-tar xvfz virtualenv-1.10.1.tar.gz
+virtualenv /srv/OAuth
 ```
-
-### Create Python 2 virtual environment ###
-mkdir -p /srv/python/2/venvs/
-/usr/bin/python2.7 virtualenv.py /srv/python/2/venvs/OAuth
 
 ### Switch to Python 2 venv ###
-. /srv/python/2/venvs/OAuth/bin/activate
+
+```
+. /srv/OAuth/bin/activate
+```
 
 ### Install pyopenssl package in the virtual environment ###
-Ensure openssl-dev is installed.
-pyopenssl 0.13 and later require openssl with TLS support, provided by openssl 0.9.8f and later.
-If openssl 0.9.8f or later is installed run:
-easy_install pyOpenSSL
+Ensure openssl-dev (and libffi-dev) is installed; then create the python openssl module:
 
-f openssl 0.9.9e or earlier is installed upgrade openssl or run:
-easy_install http://pypi.python.org/packages/source/p/pyOpenSSL/pyOpenSSL-0.12.tar.gz
+```
+easy_install pyOpenSSL
+```
 
 ### install NDG AS ###
-1. Get files
+Fetch the source files from the Git repository into /srv/OAuth/src:
+
 ```
-{ mkdir /srv/ndg-oath-as/as-ndg-master/ ; true ; }
-cd /srv/ndg-oath-as/as-ndg-master
-git clone -b as-ndg-master https://github.com/wvengen/oauth2-demo as-ndg-master
+mkdir /srv/OAuth/src
+cd /srv/OAuth/src
+git clone https://github.com/TheLanguageArchive/ndg_oauth.git
+easy_install /srv/OAuth/src/ndg_oauth/ndg_oauth_server/
 ```
 
-2. install AS
+Initialize the base server in /srv/OAuth/server:
+
 ```
-easy_install http://www.nikhef.nl/~wvengen/misc/ndg_oauth_server-0.4.0.tar.gz
+mkdir -p /srv/OAuth/server
+cp -r /srv/OAuth/src/ndg_oauth/ndg_oauth_server/ndg/oauth/server/examples/bearer_tok/* /srv/OAuth/server
+rm /srv/OAuth/server/README /srv/OAuth/server/__init__.py
 ```
 
 ## AS configuration ##
+
 
 After installation edit bearer_tok_server_app.ini
 
 In order to start the AS with the paste http server, activate the virtual environment and start the server with the correct
 configuration file:
 ```
-> . /srv/python/2/venvs/OAuth/bin/activate
-> paster serve bearer_tok_server_app.ini start
+. /srv/OAuth/bin/activate
+cd /srv/OAuth/server
+paster serve bearer_tok_server_app.ini start
 ```
 
 init.d script (oauthctl.sh):
