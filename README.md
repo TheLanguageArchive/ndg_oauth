@@ -6,16 +6,21 @@ Some changes required for us and implemented by Willem van Engen have already be
 ## Requirements ##
 
 * python 2.7
-* downgraded genshi from 0.7 to 0.6
 * openssl-dev 0.9.8f or later
 * python virtualenv
 * python easy_install
+
+In Debian / Ubuntu:
+
+```
+sudo apt-get install build-essential openssl libssl-dev libffi-dev git python python-dev python-virtualenv
+```
 
 ## Installation ##
 
 [Work in progress]
 
-This guide assumes installation of the AS in the /srv/
+This guide assumes installation of the AS in the /srv/OAuth
 
 ### Create Python 2 virtual environment for AS ###
 
